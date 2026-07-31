@@ -1,0 +1,21 @@
+# secrets
+.env
+
+# python
+venv/
+__pycache__/
+*.pyc
+
+# downloaded exports (Playwright downloads land here locally before upload)
+extraction/downloads/
+*.csv
+
+# dbt
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+
+# airflow
+airflow/logs/
+airflow/plugins/
+airflow/dags/__pycache__/
