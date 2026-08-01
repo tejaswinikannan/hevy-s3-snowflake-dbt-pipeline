@@ -46,7 +46,8 @@ Raw Hevy exports land at `s3://hevy-pipeline-dteja93/raw/hevy/dt=YYYY-MM-DD/expo
 
 - **Role**: `snowflake-hevy-s3-role`
 - **ARN**: `arn:aws:iam::<your-account-id>:role/snowflake-hevy-s3-role`
-- **Trust policy**: currently a placeholder (trusts own account root, external ID `0000000000`). **Finalized in Phase 2** once Snowflake's storage integration provides its real `STORAGE_AWS_IAM_USER_ARN` and `STORAGE_AWS_EXTERNAL_ID` — those values replace the placeholders here.
+- **Trust policy**: finalized in Phase 2 — trusts Snowflake's actual per-integration IAM user (`STORAGE_AWS_IAM_USER_ARN` from `DESCRIBE INTEGRATION hevy_s3_int`), conditioned on Snowflake's `STORAGE_AWS_EXTERNAL_ID`. The real values aren't recorded here (not committed) — see `infra/snowflake/003_storage_integration.sql` for how to regenerate them if this needs rebuilding; re-run `DESCRIBE INTEGRATION hevy_s3_int;` in Snowsight to see the current values.
+- **Verified 2026-07-31**: `LIST @hevy_raw_stage;` in Snowsight successfully listed the test file uploaded during Phase 1 — confirms the full cross-account handshake (role, trust policy, storage integration, stage) works end-to-end.
 - **Inline policy**: `hevy-s3-read-policy` — read-only (`s3:ListBucket` conditioned to `raw/hevy/*`, `s3:GetObject`, `s3:GetObjectVersion`) on the same bucket/prefix as the extractor user.
 
 ```json
