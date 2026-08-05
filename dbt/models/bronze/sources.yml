@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: hevy_export
+        description: >
+          Raw Hevy CSV export, landed via COPY INTO. Full historical dump,
+          reloaded unfiltered every run -- one row per set, all columns
+          typed as STRING to preserve source fidelity.
+
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: pipeline_control
+        description: >
+          Watermark control table. dbt only reads last_watermark_ts from
+          here (to filter this run's incremental load); Airflow is the only
+          writer, and only after a full successful bronze+gold run.
