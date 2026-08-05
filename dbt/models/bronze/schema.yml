@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: bronze_sets
+    description: One row per set, cleaned and typed, incrementally merged.
+    columns:
+      - name: set_pk
+        description: Surrogate key over (start_time, exercise_title, set_index).
+        tests:
+          - unique
+          - not_null
+      - name: start_time
+        description: >
+          Parsed via TRY_TO_TIMESTAMP -- NULL here means the source string
+          didn't match the expected format (a real data-quality signal, not
+          expected in normal operation).
+        tests:
+          - not_null
+      - name: end_time
+        tests:
+          - not_null

@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: gold_session_volume
+    description: One row per workout session, with strength/cardio totals.
+    columns:
+      - name: session_start_time
+        tests:
+          - unique
+          - not_null
+
+  - name: gold_prs
+    description: One row per exercise -- heaviest single-set weight ever lifted.
+    columns:
+      - name: exercise_title
+        tests:
+          - unique
+          - not_null
+
+  - name: gold_weekly_totals
+    description: One row per week, rolled up from gold_session_volume.
+    columns:
+      - name: week_start
+        tests:
+          - unique
+          - not_null
