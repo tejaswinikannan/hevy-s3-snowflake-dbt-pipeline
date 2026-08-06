@@ -5,12 +5,6 @@ no official API), lands it in S3, and loads it into Snowflake through a
 raw → bronze → gold medallion architecture using dbt, orchestrated weekly by
 a local Airflow instance.
 
-See [`hevy-pipeline-architecture.md`](./hevy-pipeline-architecture.md) for the
-original design rationale and cost estimate. That doc reflects the plan as
-first proposed; a few things changed once real data and real infra showed up
-(see [Real-world corrections](#real-world-corrections-to-the-original-plan)
-below) — this README describes what's actually built.
-
 ## Architecture
 
 ```
@@ -225,9 +219,3 @@ it has.
 
 **Hevy changed their UI and scraping broke.**
 See [`infra/hevy-scraping-broke-runbook.md`](./infra/hevy-scraping-broke-runbook.md).
-
-## Cost
-
-See the architecture doc's [cost estimate](./hevy-pipeline-architecture.md#4-cost-estimate)
-— realistically ~$2–4/month between AWS storage and Snowflake compute at
-this data volume and weekly schedule.
