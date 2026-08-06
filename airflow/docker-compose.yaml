@@ -25,6 +25,7 @@
 x-airflow-common:
   &airflow-common
   build: .
+  image: hevy-airflow:latest
   env_file:
     - ../.env
   environment:
