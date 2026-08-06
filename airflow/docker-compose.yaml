@@ -40,6 +40,11 @@ x-airflow-common:
     AIRFLOW__API_AUTH__JWT_ISSUER: ${AIRFLOW__API_AUTH__JWT_ISSUER:-airflow}
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    # Overrides the Windows host path from ../.env (used by local dbt runs
+    # via run_local.ps1) with the in-container path the key gets mounted at
+    # below -- Compose's environment: takes precedence over env_file: for
+    # the same key, so .env itself doesn't need to change.
+    SNOWFLAKE_PRIVATE_KEY_PATH: /opt/airflow/secrets/snowflake_rsa_key.p8
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
@@ -47,6 +52,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ../dbt:/opt/airflow/dbt
     - ../extraction:/opt/airflow/extraction
+    - ../snowflake_rsa_key.p8:/opt/airflow/secrets/snowflake_rsa_key.p8:ro
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -140,7 +146,7 @@ services:
         mkdir -v -p /opt/airflow/{logs,dags,plugins,config}
         /entrypoint airflow version
         /entrypoint airflow config list >/dev/null
-        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/
+        chown -R "${AIRFLOW_UID:-50000}:0" /opt/airflow/{logs,dags,plugins,config}
     environment:
       <<: *airflow-common-env
       _AIRFLOW_DB_MIGRATE: 'true'
