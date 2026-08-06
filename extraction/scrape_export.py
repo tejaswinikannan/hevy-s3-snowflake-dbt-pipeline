@@ -34,7 +34,11 @@ def scrape_export(headless: bool = True) -> Path:
         page.get_by_role("link", name="Settings").click()
         page.get_by_text("Export Data").click()
 
-        with page.expect_download() as download_info:
+        # Default 30s is too tight for Hevy to generate a full historical
+        # export server-side before streaming the download -- observed
+        # timing out under headless automation even though the click itself
+        # succeeds.
+        with page.expect_download(timeout=120_000) as download_info:
             page.get_by_role("button", name="Export Workout Data").click()
 
         dest = DOWNLOAD_DIR / "workouts.csv"
